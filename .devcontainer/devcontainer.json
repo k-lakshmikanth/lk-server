@@ -11,8 +11,9 @@
 		"ghcr.io/prulloac/devcontainer-features/ollama:1": {},
 		"ghcr.io/devcontainers-extra/features/n8n:1": {
 			"version": "latest"
-		}
-	}
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2":{}
+	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -21,7 +22,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
+	"postCreateCommand": "pip install open-webui"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
