@@ -4,7 +4,12 @@
 	"name": "Ubuntu",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:noble",
+	
+	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
+		"ghcr.io/devcontainers/features/python:1":{
+			"version":"latest"
+		},
 		"ghcr.io/prulloac/devcontainer-features/ollama:1": {
 			"pull": "llama3.2"
 		},
@@ -13,14 +18,11 @@
 		}
 	},
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [5678],
+	"forwardPorts": [5678],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": ""
+	"postCreateCommand": "pip install flask"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
