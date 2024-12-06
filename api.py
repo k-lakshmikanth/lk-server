@@ -1,4 +1,3 @@
-
 from flask import Flask, request
 import requests as req
 import os
@@ -8,7 +7,7 @@ app = Flask(__name__)
 @app.route("/api/chat", methods=["GET"])
 def chat():
     """User prompt formating"""
-    return {"user_prompt":request.args["body"]} , 200
+    return {"chatInput":request.args["body"]} , 200
 
 @app.route("/api/transcribe", methods=["GET"])
 def transcribe():
@@ -28,7 +27,7 @@ def transcribe():
     
     os.remove(filename)
 
-    return {"user_prompt":transcription.json()["text"]} , 200
+    return {"chatInput":transcription.json()["text"]} , 200
 
 if __name__ == "__main__":
     app.run(debug=True,port=3000)
