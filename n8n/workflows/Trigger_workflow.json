@@ -1,0 +1,340 @@
+{
+  "name": "Trigger workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -520,
+        180
+      ],
+      "id": "f71305cc-a099-4aeb-862d-0d7ebd204f17",
+      "name": "Telegram Trigger",
+      "webhookId": "c814611e-e5af-4f82-9fd3-ca482618255a",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZDGb8KGuEglUFBy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5571b6e9-3871-4830-97f3-3cbbecae187b",
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.hasOwnProperty('voice') }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "81d7a2f6-f519-4fa1-bc58-838371a1bdf6",
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.hasOwnProperty('text') }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -240,
+        180
+      ],
+      "id": "6fc8e88e-bf15-4550-8d3d-eb5e448e9cec",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "options": {
+          "keepAlive": "10m"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        260,
+        360
+      ],
+      "id": "6a6440b8-cfad-4f71-8f26-0390dfb43a6e",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "braMsKag9Kfe0m4E",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:3000/api/transcribe",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "path",
+              "value": "={{ $('Twilio Trigger').item.json.MediaUrl0 }}"
+            },
+            {
+              "name": "file",
+              "value": "={{ $('Twilio Trigger').item.json.MessageSid }}.mp3"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        80,
+        80
+      ],
+      "id": "7c9adec8-70fb-4b7b-a877-fbbf75a75185",
+      "name": "Transcribe Request"
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:3000/api/chat",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "body",
+              "value": "={{ $('Telegram Trigger').item.json.message.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        80,
+        280
+      ],
+      "id": "c16d5f1f-7172-490d-a757-59f67bc690e4",
+      "name": "Chat Request"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $('AI Agent').item.json.output }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "reply_to_message_id": "={{ $('Telegram Trigger').item.json.message.message_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        160
+      ],
+      "id": "5895d224-972c-4638-be85-3d24c5e1f42b",
+      "name": "Telegram",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZDGb8KGuEglUFBy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {
+          "readStatus": "unread"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        340
+      ],
+      "id": "eeadd8e0-40de-4b7f-87fb-2efe52ac70bd",
+      "name": "Gmail(Get Many)",
+      "webhookId": "e22e1369-8f2f-49dc-9bbc-1f8e1e6a9929",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TNohsn5pxcrHtkCU",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are an intelligent email assistant. Your primary tasks are to read and summarize emails and, upon user confirmation, create Google Meet appointments in the calendar based on the email content.\n\nGuidelines for Summarizing Emails:\n\nFocus on relevant emails, such as personal or professional correspondence.\nExclude promotional messages, app notifications, permission requests, and other irrelevant content.\nPresent summaries in this format:\n[Sender Name] [Sender Email]: [Email Summary]\nEnsure summaries are clear, concise, and accurate.\nGuidelines for Creating Google Meetings:\n\nIf an email references scheduling or setting up a meeting, provide the user with a clear summary and confirm details (date, time, participants, and purpose).\nOn user confirmation, create a Google Calendar event with a Google Meet link and include relevant participants and details.\nNotify the user once the event is successfully created.\nExample Workflow:\n\nEmail Summary:\nJohn Doe john.doe@mail.com: Proposal discussion suggested for Friday at 3 PM.\nUser Confirmation:\n\"Set up a Google Meet for this discussion on the suggested time.\"\nAction:\nCreate a calendar event, send invites, and confirm to the user:\n\"Google Meet scheduled for Friday at 3 PM with John Doe.\"",
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        300,
+        160
+      ],
+      "id": "5f46928e-0b39-4c19-8d09-368c9dcd695d",
+      "name": "AI Agent",
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Transcribe Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Chat Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        []
+      ]
+    },
+    "Gmail(Get Many)": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "afd9c920-22fd-4a3d-ac44-f9af9b47a14e",
+  "meta": {
+    "instanceId": "80602dcc6ed2338efc8c00a2752cc118e7c178067cbc1c20a0da51cb92208d1a"
+  },
+  "id": "wVCNGYFrHqGlrcIx",
+  "tags": [
+    {
+      "createdAt": "2024-11-28T03:55:36.600Z",
+      "updatedAt": "2024-11-28T03:55:36.600Z",
+      "id": "GOdhgflMs2eVqL5O",
+      "name": "Telegram Bot api"
+    }
+  ]
+}
