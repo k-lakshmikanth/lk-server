@@ -5,6 +5,12 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: pip install -r requirements.txt
+  - name: Install ollama
+    before: curl -fsSL https://ollama.com/install.sh | sh
+    init: ollama pull phi3:14b
+    command: ollama serve
+    
+  - name: Python dependencies
+    init: pip install -r requirements.txt
 
 
