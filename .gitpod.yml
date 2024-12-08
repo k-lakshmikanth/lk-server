@@ -19,6 +19,7 @@ tasks:
     
   - name: Install Dependencies and start python api
     command: |
+      pip install --upgrade pip
       pip install -r requirements.txt
       python /workspace/lk-server/api.py
 
