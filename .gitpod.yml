@@ -9,6 +9,7 @@ tasks:
     command: |
       curl -fsSL https://ollama.com/install.sh | sh
       ollama serve &
+      clear
       ollama pull phi3:14b
   
   - name: Install n8n and start n8n server
