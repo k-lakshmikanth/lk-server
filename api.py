@@ -7,7 +7,10 @@ app = Flask(__name__)
 @app.route("/api/chat", methods=["GET"])
 def chat():
     """User prompt formating"""
-    return {"chatInput":request.args["body"]} , 200
+    if request.args["body"] != "/start":
+        return {"chatInput":request.args["body"]} , 200
+    else:
+        return {"Error":"This is a start command of the conversation with the chat bot."}, 200
 
 @app.route("/api/transcribe", methods=["GET"])
 def transcribe():
@@ -30,4 +33,4 @@ def transcribe():
     return {"chatInput":transcription.json()["text"]} , 200
 
 if __name__ == "__main__":
-    app.run(debug=True,port=3000)
+    app.run(debug=True,port=8000)
