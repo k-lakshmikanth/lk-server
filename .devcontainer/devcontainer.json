@@ -11,7 +11,7 @@
 			"version":"latest"
 		},
 		"ghcr.io/prulloac/devcontainer-features/ollama:1": {
-			"pull": "llama3.2"
+			"pull": "phi3:14b"
 		},
 		"ghcr.io/devcontainers-extra/features/n8n:1": {
 			"version": "latest"
