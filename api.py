@@ -7,27 +7,37 @@ app = Flask(__name__)
 @app.route("/api/chat", methods=["GET"])
 def chat():
     """User prompt formating"""
-    return {"chatInput":request.args["body"]} , 200
+    if request.args["body"] != "/start":
+        return {"chatInput":request.args["body"]} , 200
+    else:
+        return {"Error":"This is a start command of the conversation with the chat bot."}, 200
 
 @app.route("/api/transcribe", methods=["GET"])
 def transcribe():
     """Retrieve text from audio."""
+    try:
+        api_token = request.args["token"]
+        file_id = request.args["file_id"]
+        file_path = req.get(f'https://api.telegram.org/bot{api_token}/getFile',
+                        data={"file_id":file_id}).json()["result"]["file_path"]
 
-    filename = f"/workspaces/lk-server/n8n/data/{request.args['file']}"
-    audio_path = request.args["path"]
+        file_name = f"/workspaces/lk-server/n8n/data/{file_path[:-3]}.mp3"
+        audio_path = f'https://api.telegram.org/file/bot{api_token}/{file_path}'
 
-    with open(filename, "wb") as f:
-        f.write(req.get(audio_path).content)
+        with open(file_name, 'wb') as file:
+            file.write(req.get(audio_path).content)
 
-    transcription = req.post("https://api.groq.com/openai/v1/audio/transcriptions",
-                    headers={"Authorization": "Bearer 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"},
-                    data={"model": "whisper-large-v3-turbo",
-                          "response_format": "verbose_json"},
-                    files={"file": open(filename, "rb")})
-    
-    os.remove(filename)
+        transcription = req.post("https://api.groq.com/openai/v1/audio/transcriptions",
+                        headers={"Authorization": "Bearer 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"},
+                        data={"model": "whisper-large-v3-turbo",
+                                "response_format": "verbose_json"},
+                        files={"file": open(file_name, "rb")})
+        
+        os.remove(file_name)
 
-    return {"chatInput":transcription.json()["text"]} , 200
+        return {"chatInput":transcription.json()["text"]} , 200
+    except Exception as e:
+        return e
 
 if __name__ == "__main__":
-    app.run(debug=True,port=3000)
+    app.run(debug=True,port=8000)
