@@ -21,14 +21,14 @@ def transcribe():
         file_path = req.get(f'https://api.telegram.org/bot{api_token}/getFile',
                         data={"file_id":file_id}).json()["result"]["file_path"]
 
-        file_name = f"/workspaces/lk-server/n8n/data/{file_path[:-3]}.mp3"
+        file_name = f"/workspace/lk-server/n8n/data/{file_path[:-3]}mp3"
         audio_path = f'https://api.telegram.org/file/bot{api_token}/{file_path}'
 
         with open(file_name, 'wb') as file:
             file.write(req.get(audio_path).content)
 
         transcription = req.post("https://api.groq.com/openai/v1/audio/transcriptions",
-                        headers={"Authorization": "Bearer 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"},
+                        headers={"Authorization": "Bearer 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"},
                         data={"model": "whisper-large-v3-turbo",
                                 "response_format": "verbose_json"},
                         files={"file": open(file_name, "rb")})
@@ -37,7 +37,7 @@ def transcribe():
 
         return {"chatInput":transcription.json()["text"]} , 200
     except Exception as e:
-        return e
+        return str(e)
 
 if __name__ == "__main__":
     app.run(debug=True,port=8000)
