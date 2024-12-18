@@ -1,2 +1,2 @@
-export WEBHOOK_URL=https://probable-computing-machine-4pxgx9v7w96hqjww-5678.app.github.dev/
+export WEBHOOK_URL=https://5678-klakshmikanth-lkserver-cwamcheztjl.ws-us117.gitpod.io/
 n8n start
