@@ -4,6 +4,10 @@ import os
 
 app = Flask(__name__)
 
+@app.route("/")
+def index():
+  return "<h1>This is an api</h1>"
+
 @app.route("/api/chat", methods=["GET"])
 def chat():
     """User prompt formating"""
