@@ -1,12 +1,14 @@
 # List the start up tasks. Learn more: https://www.gitpod.io/docs/configure/workspaces/tasks
 tasks:
   - name: ollama
-    init: curl -fsSL https://ollama.com/install.sh | sh
-    command: ollama serve
+    command: |
+      curl -fsSL https://ollama.com/install.sh | sh
+      ollama serve
 
   - name: n8n
-    init: npm install n8n -g
-    command: sh ./scripts/start-n8n.sh
+    command: |
+      npm install n8n -g
+      sh ./scripts/start-n8n.sh
 
   - name: api
     init: pip install -r requirements.txt
