@@ -1,0 +1,22 @@
+# List the start up tasks. Learn more: https://www.gitpod.io/docs/configure/workspaces/tasks
+tasks:
+  - name: ollama
+    init: curl -fsSL https://ollama.com/install.sh | sh
+    command: ollama serve
+
+  - name: n8n
+    init: npm install n8n -g
+    command: sh ./scripts/start-n8n.sh
+
+  - name: api
+    init: pip install -r requirements.txt
+    command: clear & python api.py
+
+# List the ports to expose. Learn more: https://www.gitpod.io/docs/configure/workspaces/ports
+ports:
+  - name: n8n
+    visibility: public
+    port: 5678
+    onOpen: ignore
+
+# Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
