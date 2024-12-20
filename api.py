@@ -25,7 +25,7 @@ def transcribe():
         file_path = req.get(f'https://api.telegram.org/bot{api_token}/getFile',
                         data={"file_id":file_id}).json()["result"]["file_path"]
 
-        file_name = f"/workspace/lk-server/n8n/data/{file_path[:-3]}mp3"
+        file_name = f"/workspaces/lk-server/n8n/data/{file_path[:-3]}mp3"
         audio_path = f'https://api.telegram.org/file/bot{api_token}/{file_path}'
 
         with open(file_name, 'wb') as file:
