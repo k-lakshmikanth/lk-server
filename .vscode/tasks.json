@@ -4,9 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "echo",
-            "type": "bash",
-            "command": "echo Hello"
+            "label": "n8n",
+            "type": "shell",
+            "command": "sh /workspaces/lk-server/scripts/start-n8n.sh"
         }
     ]
 }
