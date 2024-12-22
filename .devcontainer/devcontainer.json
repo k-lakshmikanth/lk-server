@@ -14,5 +14,12 @@
 		"ghcr.io/devcontainers-extra/features/n8n:1": {
 			"version": "latest"
 		}
+	},
+	"forwardPorts": [3000,5678,8000],
+    "portsAttributes": {
+        "5678": {
+	    "visibility": "public"
 	}
+    }
+
 }
