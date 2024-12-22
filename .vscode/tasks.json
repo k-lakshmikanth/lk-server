@@ -6,7 +6,7 @@
         {
             "label": "n8n",
             "type": "shell",
-            "command": "sh /workspaces/lk-server/scripts/start-n8n.sh"
+            "command": "sh ./scripts/start-n8n.sh"
         }
     ]
 }
