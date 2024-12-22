@@ -5,7 +5,7 @@
     "tasks": [
         {
             "label": "echo",
-            "type": "shell",
+            "type": "bash",
             "command": "echo Hello"
         }
     ]
