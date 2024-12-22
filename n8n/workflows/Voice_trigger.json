@@ -1,5 +1,5 @@
 {
-  "name": "Trigger workflow",
+  "name": "Voice trigger",
   "nodes": [
     {
       "parameters": {
@@ -11,15 +11,15 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.1,
       "position": [
-        -520,
-        180
+        -540,
+        80
       ],
-      "id": "f71305cc-a099-4aeb-862d-0d7ebd204f17",
+      "id": "b5153ecb-5d3d-4634-8df7-10fda3a40dba",
       "name": "Telegram Trigger",
       "webhookId": "c814611e-e5af-4f82-9fd3-ca482618255a",
       "credentials": {
         "telegramApi": {
-          "id": "8ZDGb8KGuEglUFBy",
+          "id": "9F7c3Lfb2eisGwvq",
           "name": "Telegram account"
         }
       }
@@ -85,46 +85,25 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -240,
-        180
+        -300,
+        80
       ],
-      "id": "6fc8e88e-bf15-4550-8d3d-eb5e448e9cec",
+      "id": "a5bcc668-eadc-498e-87d6-c1ed21498adb",
       "name": "Switch"
     },
     {
       "parameters": {
-        "options": {
-          "keepAlive": "10m"
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
-      "typeVersion": 1,
-      "position": [
-        260,
-        360
-      ],
-      "id": "6a6440b8-cfad-4f71-8f26-0390dfb43a6e",
-      "name": "Ollama Chat Model",
-      "credentials": {
-        "ollamaApi": {
-          "id": "braMsKag9Kfe0m4E",
-          "name": "Ollama account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "url": "http://127.0.0.1:3000/api/transcribe",
+        "url": "http://127.0.0.1:8000/api/transcribe",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
             {
-              "name": "path",
-              "value": "={{ $('Twilio Trigger').item.json.MediaUrl0 }}"
+              "name": "file_id",
+              "value": "={{ $json.message.voice.file_id }}"
             },
             {
-              "name": "file",
-              "value": "={{ $('Twilio Trigger').item.json.MessageSid }}.mp3"
+              "name": "token",
+              "value": "=7955220166:AAG1LduLJE8_qiMtAKJKQbsUNAop_jtPqDk"
             }
           ]
         },
@@ -133,15 +112,15 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        80,
-        80
+        0,
+        0
       ],
-      "id": "7c9adec8-70fb-4b7b-a877-fbbf75a75185",
+      "id": "5690fb44-ce28-4e0d-b466-3ce81180f117",
       "name": "Transcribe Request"
     },
     {
       "parameters": {
-        "url": "http://127.0.0.1:3000/api/chat",
+        "url": "http://127.0.0.1:8000/api/chat",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
@@ -156,76 +135,72 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        80,
-        280
+        0,
+        180
       ],
-      "id": "c16d5f1f-7172-490d-a757-59f67bc690e4",
+      "id": "dfdb4a93-c642-43d1-bdaf-d6d4f384bb8a",
       "name": "Chat Request"
     },
     {
       "parameters": {
         "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "={{ $('AI Agent').item.json.output }}",
+        "text": "={{ $json.output }}",
         "additionalFields": {
           "appendAttribution": false,
+          "parse_mode": "Markdown",
           "reply_to_message_id": "={{ $('Telegram Trigger').item.json.message.message_id }}"
         }
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        640,
-        160
+        680,
+        100
       ],
-      "id": "5895d224-972c-4638-be85-3d24c5e1f42b",
+      "id": "26ccca3e-3425-4d56-b573-ca9385376869",
       "name": "Telegram",
       "credentials": {
         "telegramApi": {
-          "id": "8ZDGb8KGuEglUFBy",
+          "id": "9F7c3Lfb2eisGwvq",
           "name": "Telegram account"
         }
       }
     },
     {
       "parameters": {
-        "operation": "getAll",
-        "returnAll": true,
-        "filters": {
-          "readStatus": "unread"
-        }
-      },
-      "type": "n8n-nodes-base.gmailTool",
-      "typeVersion": 2.1,
-      "position": [
-        480,
-        340
-      ],
-      "id": "eeadd8e0-40de-4b7f-87fb-2efe52ac70bd",
-      "name": "Gmail(Get Many)",
-      "webhookId": "e22e1369-8f2f-49dc-9bbc-1f8e1e6a9929",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "TNohsn5pxcrHtkCU",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "options": {
-          "systemMessage": "You are an intelligent email assistant. Your primary tasks are to read and summarize emails and, upon user confirmation, create Google Meet appointments in the calendar based on the email content.\n\nGuidelines for Summarizing Emails:\n\nFocus on relevant emails, such as personal or professional correspondence.\nExclude promotional messages, app notifications, permission requests, and other irrelevant content.\nPresent summaries in this format:\n[Sender Name] [Sender Email]: [Email Summary]\nEnsure summaries are clear, concise, and accurate.\nGuidelines for Creating Google Meetings:\n\nIf an email references scheduling or setting up a meeting, provide the user with a clear summary and confirm details (date, time, participants, and purpose).\nOn user confirmation, create a Google Calendar event with a Google Meet link and include relevant participants and details.\nNotify the user once the event is successfully created.\nExample Workflow:\n\nEmail Summary:\nJohn Doe john.doe@mail.com: Proposal discussion suggested for Friday at 3 PM.\nUser Confirmation:\n\"Set up a Google Meet for this discussion on the suggested time.\"\nAction:\nCreate a calendar event, send invites, and confirm to the user:\n\"Google Meet scheduled for Friday at 3 PM with John Doe.\"",
+          "systemMessage": "You are a helpful assistant",
           "returnIntermediateSteps": false
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
       "position": [
-        300,
-        160
+        320,
+        100
       ],
-      "id": "5f46928e-0b39-4c19-8d09-368c9dcd695d",
+      "id": "01cae64e-58ee-4ecb-b490-448083a08568",
       "name": "AI Agent",
       "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        280,
+        320
+      ],
+      "id": "40fbd4b6-26e7-4dc3-812e-0852adc72078",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "CdPNp0vVofmdiB1w",
+          "name": "Groq account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -259,17 +234,6 @@
         ]
       ]
     },
-    "Ollama Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Transcribe Request": {
       "main": [
         [
@@ -292,22 +256,6 @@
         ]
       ]
     },
-    "Telegram": {
-      "main": [
-        []
-      ]
-    },
-    "Gmail(Get Many)": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "AI Agent": {
       "main": [
         [
@@ -318,23 +266,40 @@
           }
         ]
       ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "afd9c920-22fd-4a3d-ac44-f9af9b47a14e",
+  "versionId": "92009c8a-a819-455a-915e-3da04b0b088b",
   "meta": {
-    "instanceId": "80602dcc6ed2338efc8c00a2752cc118e7c178067cbc1c20a0da51cb92208d1a"
+    "instanceId": "bbc33155c36ad35048e09b477523491bb4ccb05e1a5c4033e2ff2cd3815d5164"
   },
-  "id": "wVCNGYFrHqGlrcIx",
+  "id": "XAvEuvM7Ind9llbc",
   "tags": [
     {
-      "createdAt": "2024-11-28T03:55:36.600Z",
-      "updatedAt": "2024-11-28T03:55:36.600Z",
-      "id": "GOdhgflMs2eVqL5O",
+      "createdAt": "2024-12-20T09:16:46.849Z",
+      "updatedAt": "2024-12-20T09:16:46.849Z",
+      "id": "H9ezyPkB9tciF8uf",
       "name": "Telegram Bot api"
+    },
+    {
+      "createdAt": "2024-12-20T09:16:46.856Z",
+      "updatedAt": "2024-12-20T09:16:46.856Z",
+      "id": "n9awPD7DuYRXLQlA",
+      "name": "Groq"
     }
   ]
 }
