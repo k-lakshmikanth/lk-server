@@ -1,0 +1,1 @@
+n8n import:workflow --separate --input=n8n/workflows
