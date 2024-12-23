@@ -14,7 +14,8 @@ def chat():
     if request.args["body"] != "/start":
         return {"chatInput":request.args["body"]} , 200
     else:
-        return {"Error":"This is a start command of the conversation with the chat bot."}, 200
+        return {"chatInput":"Hello"} , 200
+        
 
 @app.route("/api/transcribe", methods=["GET"])
 def transcribe():
@@ -33,8 +34,11 @@ def transcribe():
 
         transcription = req.post("https://api.groq.com/openai/v1/audio/transcriptions",
                         headers={"Authorization": "Bearer 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"},
-                        data={"model": "whisper-large-v3-turbo",
-                                "response_format": "verbose_json"},
+                        data={
+                              "model": "whisper-large-v3-turbo",
+                              "prompt":"You convert spoken English audio into accurate written text. Focus on clarity, punctuation, and handling accents or noise.",
+                              "response_format": "verbose_json"
+                              },
                         files={"file": open(file_name, "rb")})
         
         os.remove(file_name)
