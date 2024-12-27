@@ -1,0 +1,191 @@
+{
+  "name": "/gmail/send",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "765ff71c-eb90-4fe4-b9ad-4ec679305a03",
+              "leftValue": "={{ $json.body.is_reply }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        40,
+        20
+      ],
+      "id": "6d2ea48f-fe98-4049-bed8-3f0ca7469da3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/gmail/send",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        20
+      ],
+      "id": "29614d27-7f32-4a36-93c7-b8e550ec6b28",
+      "name": "Webhook",
+      "webhookId": "359a3140-3cf2-47ff-8c00-654dde57dbf6"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $json.body.reply_to_message_id }}",
+        "emailType": "text",
+        "message": "={{ $json.body.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        260,
+        -80
+      ],
+      "id": "233cc012-9f15-4920-8a29-e7ff0e690e43",
+      "name": "reply",
+      "webhookId": "10c8cadb-187a-462e-bd6e-8b799481cb21",
+      "retryOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "BdUgsN97njJvbt4h",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.body.to }}",
+        "subject": "={{ $json.body.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.body.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        260,
+        120
+      ],
+      "id": "c81199f9-137b-4bd8-9c1d-e8425a88599c",
+      "name": "Gmail",
+      "webhookId": "38497bc1-0fd2-417c-a7cb-95152d7dac05",
+      "retryOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "BdUgsN97njJvbt4h",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseKey": "={{ $json }}"
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        20
+      ],
+      "id": "253ae167-fc4c-4b4d-9c8a-35260efad398",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reply": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "31741197-a5c3-4034-ab55-4909d3658693",
+  "meta": {
+    "instanceId": "e466a215aa3b4b3165fff4afd51ae5ea97ecaad3e89f5bafdfde8185abd49567"
+  },
+  "id": "10TNzaLg97LMo9GB",
+  "tags": []
+}

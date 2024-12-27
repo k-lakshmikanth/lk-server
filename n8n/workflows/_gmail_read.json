@@ -1,0 +1,183 @@
+{
+  "name": "/gmail/read",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4a77c337-66e5-42a1-95e8-dfa6c877be6b",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "2d197a8b-efac-438b-a437-67da07cec79a",
+              "name": "labelIds",
+              "value": "={{ $json.labelIds }}",
+              "type": "array"
+            },
+            {
+              "id": "d80e32c0-0ffe-41af-af2a-862a7259945c",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "d807ab21-8b14-4b53-a7a3-edb80946ac26",
+              "name": "subject",
+              "value": "={{ $json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "4bc51516-5e09-419f-94e3-aee13b6e17f3",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "8524640a-b189-4203-9aa2-24e8fe3c5771",
+              "name": "to.text",
+              "value": "={{ $json.to.text }}",
+              "type": "string"
+            },
+            {
+              "id": "b1cf5e85-2807-47dd-9187-7800daec4afa",
+              "name": "from.text",
+              "value": "={{ $json.from.text }}",
+              "type": "string"
+            },
+            {
+              "id": "57788d7b-2433-4282-8b25-63fd5b99ff78",
+              "name": "replyTo.text",
+              "value": "={{ $json.replyTo.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        660,
+        0
+      ],
+      "id": "555ffc0b-c4e8-49d4-87f3-fc6826a9693c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        0
+      ],
+      "id": "97d3aa04-e438-428e-9ad3-43f3feae0f75",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "path": "gmail/read",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "e3c738df-2305-49d1-a1c2-eda3df061156",
+      "name": "Webhook",
+      "webhookId": "ef1728e7-839b-4d57-9632-163717287bd0"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "CATEGORY_PERSONAL"
+          ],
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        460,
+        0
+      ],
+      "id": "d50a3206-97d2-4147-8b20-f7b6acc27412",
+      "name": "All unread mails",
+      "webhookId": "3deaee9a-03b1-430e-aee2-b18c31d7da69",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "BdUgsN97njJvbt4h",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "All unread mails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "All unread mails": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b5c7fd72-1246-4c22-b0f3-8d7a0875e4d8",
+  "meta": {
+    "instanceId": "e466a215aa3b4b3165fff4afd51ae5ea97ecaad3e89f5bafdfde8185abd49567"
+  },
+  "id": "69JWBjPquLkgY7WN",
+  "tags": [
+    {
+      "createdAt": "2024-12-27T14:25:22.805Z",
+      "updatedAt": "2024-12-27T14:25:22.805Z",
+      "id": "yLimKLWz1BSTsmNt",
+      "name": "Tool"
+    }
+  ]
+}
